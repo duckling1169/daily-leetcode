@@ -10,6 +10,11 @@ LEETCODE_GQL = "https://leetcode.com/graphql"
 SEEN_PATH = Path("seen.json")
 WEBHOOK_URL = os.environ["DISCORD_WEBHOOK_URL"]
 
+# Comma-separated tag slugs to restrict the pool to. OR semantics — picks problems
+# matching *any* listed tag. Empty/unset means no tag filter. See README for the
+# full list of valid slugs.
+ALLOWED_TAGS = {t.strip() for t in os.environ.get("LEETCODE_TAGS", "").split(",") if t.strip()}
+
 HEADERS = {
     "Content-Type": "application/json",
     "User-Agent": "daily-leetcode-bot/1.0",
@@ -21,7 +26,7 @@ HEADERS = {
 PAGE_SIZE = 100  # LeetCode caps response at 100 regardless of `limit`; must paginate via `skip`.
 
 def fetch_easy_slugs():
-    """Get all free easy problem slugs across all pages."""
+    """Get all free easy problem slugs, filtered by ALLOWED_TAGS if set."""
     query = """
     query problemsetQuestionList($categorySlug: String, $limit: Int, $skip: Int, $filters: QuestionListFilterInput) {
       problemsetQuestionList: questionList(
@@ -33,6 +38,7 @@ def fetch_easy_slugs():
         questions: data {
           titleSlug
           isPaidOnly
+          topicTags { slug }
         }
       }
     }
@@ -46,7 +52,12 @@ def fetch_easy_slugs():
         page = r.json()["data"]["problemsetQuestionList"]["questions"]
         if not page:
             break
-        slugs.extend(q["titleSlug"] for q in page if not q["isPaidOnly"])
+        for q in page:
+            if q["isPaidOnly"]:
+                continue
+            if ALLOWED_TAGS and not (ALLOWED_TAGS & {t["slug"] for t in q["topicTags"]}):
+                continue
+            slugs.append(q["titleSlug"])
         skip += len(page)
     return slugs
 
@@ -100,10 +111,17 @@ def post_to_discord(problem):
 def main():
     seen = load_seen()
     all_slugs = fetch_easy_slugs()
+
+    # Misconfigured filter (e.g., typo in LEETCODE_TAGS) would otherwise silently
+    # wipe seen.json via the reset branch below. Fail loudly instead.
+    if not all_slugs:
+        print(f"No problems matched filter (tags={ALLOWED_TAGS or 'none'}). Aborting.", file=sys.stderr)
+        sys.exit(1)
+
     unseen = [s for s in all_slugs if s not in seen]
 
     if not unseen:
-        print("Exhausted all easy problems. Resetting.", file=sys.stderr)
+        print("Exhausted all matching problems. Resetting.", file=sys.stderr)
         seen = {}
         unseen = all_slugs
 
