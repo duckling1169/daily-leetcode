@@ -159,17 +159,9 @@
     "posted": "manual-import",
     "title": "String to Integer (atoi)"
   },
-  "substring-matching-pattern": {
-    "posted": "2026-05-19",
-    "title": "Substring Matching Pattern"
-  },
   "top-k-frequent-elements": {
     "posted": "manual-import",
     "title": "Top K Frequent Elements"
-  },
-  "trim-trailing-vowels": {
-    "posted": "2026-05-19",
-    "title": "Trim Trailing Vowels"
   },
   "trionic-array-i": {
     "posted": "manual-import",
