@@ -18,8 +18,10 @@ HEADERS = {
 
 # --- LeetCode fetchers ---
 
+PAGE_SIZE = 100  # LeetCode caps response at 100 regardless of `limit`; must paginate via `skip`.
+
 def fetch_easy_slugs():
-    """Get all easy problem slugs. ~870 problems, one call."""
+    """Get all free easy problem slugs across all pages."""
     query = """
     query problemsetQuestionList($categorySlug: String, $limit: Int, $skip: Int, $filters: QuestionListFilterInput) {
       problemsetQuestionList: questionList(
@@ -35,17 +37,18 @@ def fetch_easy_slugs():
       }
     }
     """
-    variables = {
-        "categorySlug": "",
-        "skip": 0,
-        "limit": 2000,
-        "filters": {"difficulty": "EASY"},
-    }
-    r = requests.post(LEETCODE_GQL, json={"query": query, "variables": variables}, headers=HEADERS, timeout=20)
-    r.raise_for_status()
-    questions = r.json()["data"]["problemsetQuestionList"]["questions"]
-    # skip premium-locked problems — users can't open them
-    return [q["titleSlug"] for q in questions if not q["isPaidOnly"]]
+    slugs = []
+    skip = 0
+    while True:
+        variables = {"categorySlug": "", "skip": skip, "limit": PAGE_SIZE, "filters": {"difficulty": "EASY"}}
+        r = requests.post(LEETCODE_GQL, json={"query": query, "variables": variables}, headers=HEADERS, timeout=20)
+        r.raise_for_status()
+        page = r.json()["data"]["problemsetQuestionList"]["questions"]
+        if not page:
+            break
+        slugs.extend(q["titleSlug"] for q in page if not q["isPaidOnly"])
+        skip += len(page)
+    return slugs
 
 def fetch_problem(slug):
     query = """
