@@ -110,6 +110,14 @@ def post_to_discord(problem):
 
 def main():
     seen = load_seen()
+    today = date.today().isoformat()
+
+    # Idempotency guard: if any entry was already posted today, exit cleanly so
+    # a manual dispatch + delayed scheduled run can't double-post.
+    if any(entry.get("posted") == today for entry in seen.values()):
+        print(f"Already posted today ({today}). Skipping.")
+        return
+
     all_slugs = fetch_easy_slugs()
 
     # Misconfigured filter (e.g., typo in LEETCODE_TAGS) would otherwise silently
@@ -129,7 +137,7 @@ def main():
     problem = fetch_problem(slug)
     post_to_discord(problem)
 
-    seen[slug] = {"posted": date.today().isoformat(), "title": problem["title"]}
+    seen[slug] = {"posted": today, "title": problem["title"]}
     save_seen(seen)
     print(f"Posted: {problem['title']} ({slug})")
 
