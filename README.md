@@ -26,6 +26,7 @@ When all matching problems have been posted, `seen.json` resets and the cycle re
 ## Files
 
 - `daily_leetcode.py` — the script
+- `requirements.txt` — pinned Python deps (just `requests`)
 - `.github/workflows/daily.yml` — cron + commit-back
 - `seen.json` — generated on first run; tracks posted slugs. Committed to the repo as auditable, free dedup state.
 
@@ -112,4 +113,4 @@ To add Mediums later: drop the `"difficulty"` filter (or call the GraphQL twice 
 
 ## Cost
 
-GitHub Actions free tier for public repos covers this comfortably (one run/day, <30s). For private repos it counts against your Actions minutes but is still trivial.
+GitHub Actions free tier for public repos covers this comfortably (one run/day, ~15s typical, occasionally up to ~90s when LeetCode's GraphQL is laggy — the script paginates ~10 sequential requests). For private repos it counts against your Actions minutes but is still trivial.
