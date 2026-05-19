@@ -23,6 +23,7 @@ jobs:
       - run: python daily_leetcode.py
         env:
           DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+          LEETCODE_TAGS: ""   # comma-separated tag slugs (e.g. "array,string,tree"); empty = all tags. See README for the full list.
 
       - name: Commit seen.json
         run: |
