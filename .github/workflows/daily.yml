@@ -2,7 +2,7 @@ name: Daily LeetCode
 
 on:
   schedule:
-    - cron: '0 14 * * *'   # 14:00 UTC = 9am ET / 10am EDT. Adjust.
+    - cron: '0 13 * * *'   # 13:00 UTC = 9 AM EDT / 8 AM EST (no DST adjust in GH Actions cron)
   workflow_dispatch:        # lets you trigger manually for testing
 
 permissions:
