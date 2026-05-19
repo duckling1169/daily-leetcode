@@ -79,6 +79,10 @@
     "posted": "manual-import",
     "title": "Merge Two Sorted Lists"
   },
+  "minimum-index-sum-of-two-lists": {
+    "posted": "2026-05-19",
+    "title": "Minimum Index Sum of Two Lists"
+  },
   "missing-number": {
     "posted": "manual-import",
     "title": "Missing Number"
