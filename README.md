@@ -1,5 +1,7 @@
 # Daily LeetCode → Discord
 
+[![Daily LeetCode](https://github.com/duckling1169/daily-leetcode/actions/workflows/daily.yml/badge.svg)](https://github.com/duckling1169/daily-leetcode/actions/workflows/daily.yml)
+
 Posts one random LeetCode Easy problem to a Discord channel every day. No bot user, no database — just a Python script, a webhook, and GitHub Actions cron.
 
 ## How it works
