@@ -167,6 +167,10 @@
     "posted": "manual-import",
     "title": "Top K Frequent Elements"
   },
+  "trim-trailing-vowels": {
+    "posted": "2026-05-19",
+    "title": "Trim Trailing Vowels"
+  },
   "trionic-array-i": {
     "posted": "manual-import",
     "title": "Trionic Array I"
