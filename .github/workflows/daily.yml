@@ -23,7 +23,7 @@ jobs:
       - run: python daily_leetcode.py
         env:
           DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
-          LEETCODE_TAGS: ""   # comma-separated tag slugs (e.g. "array,string,tree"); empty = all tags. See README for the full list.
+          LEETCODE_TAGS: "array,binary-search,binary-search-tree,binary-tree,bit-manipulation,breadth-first-search,depth-first-search,divide-and-conquer,dynamic-programming,greedy,hash-table,heap-priority-queue,linked-list,prefix-sum,recursion,sliding-window,sorting,stack,string,tree,two-pointers"
 
       - name: Commit seen.json
         run: |
