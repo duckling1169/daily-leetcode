@@ -2,7 +2,7 @@ name: Daily LeetCode
 
 on:
   schedule:
-    - cron: '7 13 * * *'   # 13:07 UTC = 9:07 AM EDT / 8:07 AM EST. Offset off :00 to dodge GH Actions' top-of-hour load (runs were getting delayed 3+ hours).
+    - cron: '7 6 * * *'    # 06:07 UTC = 2:07 AM EDT. Off-peak window; GH Actions silently dropped scheduled runs at 13:07 UTC two days running.
   workflow_dispatch:        # lets you trigger manually for testing
 
 permissions:
