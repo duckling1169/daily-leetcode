@@ -79,6 +79,10 @@
     "posted": "manual-import",
     "title": "Longest Common Prefix"
   },
+  "longest-continuous-increasing-subsequence": {
+    "posted": "2026-05-24",
+    "title": "Longest Continuous Increasing Subsequence"
+  },
   "maximum-depth-of-binary-tree": {
     "posted": "manual-import",
     "title": "Maximum Depth of Binary Tree"
