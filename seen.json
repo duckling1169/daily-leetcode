@@ -218,5 +218,9 @@
   "validate-binary-search-tree": {
     "posted": "manual-import",
     "title": "Validate Binary Search Tree"
+  },
+  "widest-vertical-area-between-two-points-containing-no-points": {
+    "posted": "2026-05-26",
+    "title": "Widest Vertical Area Between Two Points Containing No Points"
   }
 }
