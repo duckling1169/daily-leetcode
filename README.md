@@ -51,9 +51,8 @@ env:
 
 If the filter matches zero problems (e.g., a typo), the job exits non-zero rather than corrupting `seen.json`.
 
-#### Available tag slugs
-
-Counts below are free Easy problems per tag, harvested from LeetCode at one point in time — they grow as LeetCode adds problems. Slugs are stable.
+<details>
+<summary><strong>Available tag slugs</strong> — counts are free Easy problems per tag (harvested once; they grow over time, slugs are stable)</summary>
 
 | Slug | Display name | Count |
 |---|---|---:|
@@ -108,6 +107,8 @@ Counts below are free Easy problems per tag, harvested from LeetCode at one poin
 | `rolling-hash` | Rolling Hash | 1 |
 | `segment-tree` | Segment Tree | 1 |
 | `doubly-linked-list` | Doubly-Linked List | 1 |
+
+</details>
 
 To add Mediums later: drop the `"difficulty"` filter (or call the GraphQL twice and merge), rename `fetch_easy_slugs`, and update the embed footer.
 
