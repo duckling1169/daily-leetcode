@@ -35,6 +35,10 @@
     "posted": "manual-import",
     "title": "Contains Duplicate"
   },
+  "delete-characters-to-make-fancy-string": {
+    "posted": "2026-06-07",
+    "title": "Delete Characters to Make Fancy String"
+  },
   "delete-node-in-a-linked-list": {
     "posted": "manual-import",
     "title": "Delete Node in a Linked List"
