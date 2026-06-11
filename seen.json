@@ -187,6 +187,10 @@
     "posted": "manual-import",
     "title": "String to Integer (atoi)"
   },
+  "symmetric-tree": {
+    "posted": "2026-06-11",
+    "title": "Symmetric Tree"
+  },
   "top-k-frequent-elements": {
     "posted": "manual-import",
     "title": "Top K Frequent Elements"
