@@ -203,6 +203,10 @@
     "posted": "manual-import",
     "title": "Two Sum"
   },
+  "unique-email-addresses": {
+    "posted": "2026-06-12",
+    "title": "Unique Email Addresses"
+  },
   "valid-anagram": {
     "posted": "manual-import",
     "title": "Valid Anagram"
