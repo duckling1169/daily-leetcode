@@ -135,6 +135,10 @@
     "posted": "manual-import",
     "title": "Pow(x, n)"
   },
+  "range-sum-of-bst": {
+    "posted": "2026-06-16",
+    "title": "Range Sum of BST"
+  },
   "remove-duplicates-from-sorted-array": {
     "posted": "manual-import",
     "title": "Remove Duplicates from Sorted Array"
