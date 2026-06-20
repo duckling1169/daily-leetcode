@@ -123,6 +123,10 @@
     "posted": "manual-import",
     "title": "Move Zeroes"
   },
+  "number-of-beautiful-pairs": {
+    "posted": "2026-06-20",
+    "title": "Number of Beautiful Pairs"
+  },
   "palindrome-linked-list": {
     "posted": "manual-import",
     "title": "Palindrome Linked List"
