@@ -47,6 +47,10 @@
     "posted": "manual-import",
     "title": "Contains Duplicate"
   },
+  "count-monobit-integers": {
+    "posted": "2026-06-26",
+    "title": "Count Monobit Integers"
+  },
   "delete-characters-to-make-fancy-string": {
     "posted": "2026-06-07",
     "title": "Delete Characters to Make Fancy String"
