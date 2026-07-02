@@ -67,6 +67,10 @@
     "posted": "manual-import",
     "title": "Delete Node in a Linked List"
   },
+  "design-neighbor-sum-service": {
+    "posted": "2026-07-02",
+    "title": "Design Neighbor Sum Service"
+  },
   "distance-between-bus-stops": {
     "posted": "2026-06-24",
     "title": "Distance Between Bus Stops"
