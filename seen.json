@@ -147,6 +147,10 @@
     "posted": "manual-import",
     "title": "Merge Two Sorted Lists"
   },
+  "min-max-game": {
+    "posted": "2026-07-04",
+    "title": "Min Max Game"
+  },
   "minimum-cost-of-buying-candies-with-discount": {
     "posted": "2026-06-13",
     "title": "Minimum Cost of Buying Candies With Discount"
