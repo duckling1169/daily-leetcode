@@ -314,5 +314,9 @@
   "validate-binary-search-tree": {
     "posted": "manual-import",
     "title": "Validate Binary Search Tree"
+  },
+  "zigzag-grid-traversal-with-skip": {
+    "posted": "2026-07-05",
+    "title": "Zigzag Grid Traversal With Skip"
   }
 }
