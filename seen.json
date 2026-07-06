@@ -291,6 +291,10 @@
     "posted": "manual-import",
     "title": "Two Sum"
   },
+  "two-sum-iv-input-is-a-bst": {
+    "posted": "2026-07-06",
+    "title": "Two Sum IV - Input is a BST"
+  },
   "unique-email-addresses": {
     "posted": "2026-06-12",
     "title": "Unique Email Addresses"
