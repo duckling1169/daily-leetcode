@@ -259,6 +259,10 @@
     "posted": "2026-06-16",
     "title": "Range Sum of BST"
   },
+  "range-sum-query-immutable": {
+    "posted": "2026-07-25",
+    "title": "Range Sum Query - Immutable"
+  },
   "remove-duplicates-from-sorted-array": {
     "posted": "manual-import",
     "title": "Remove Duplicates from Sorted Array"
