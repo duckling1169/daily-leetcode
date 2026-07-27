@@ -339,6 +339,10 @@
     "posted": "manual-import",
     "title": "String to Integer (atoi)"
   },
+  "substring-matching-pattern": {
+    "posted": "2026-07-27",
+    "title": "Substring Matching Pattern"
+  },
   "symmetric-tree": {
     "posted": "2026-06-11",
     "title": "Symmetric Tree"
