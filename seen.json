@@ -407,6 +407,10 @@
     "posted": "manual-import",
     "title": "Validate Binary Search Tree"
   },
+  "vowel-consonant-score": {
+    "posted": "2026-07-29",
+    "title": "Vowel-Consonant Score"
+  },
   "zigzag-grid-traversal-with-skip": {
     "posted": "2026-07-05",
     "title": "Zigzag Grid Traversal With Skip"
