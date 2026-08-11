@@ -215,6 +215,10 @@
     "posted": "2026-07-24",
     "title": "Maximum Number of Balls in a Box"
   },
+  "maximum-sum-with-exactly-k-elements": {
+    "posted": "2026-08-11",
+    "title": "Maximum Sum With Exactly K Elements "
+  },
   "merge-sorted-array": {
     "posted": "manual-import",
     "title": "Merge Sorted Array"
