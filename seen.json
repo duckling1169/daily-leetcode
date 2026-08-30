@@ -455,6 +455,10 @@
     "posted": "manual-import",
     "title": "Single Number"
   },
+  "smallest-index-with-equal-value": {
+    "posted": "2026-08-30",
+    "title": "Smallest Index With Equal Value"
+  },
   "split-strings-by-separator": {
     "posted": "2026-08-03",
     "title": "Split Strings by Separator"
