@@ -463,6 +463,10 @@
     "posted": "2026-08-30",
     "title": "Smallest Index With Equal Value"
   },
+  "smallest-missing-integer-greater-than-sequential-prefix-sum": {
+    "posted": "2026-09-03",
+    "title": "Smallest Missing Integer Greater Than Sequential Prefix Sum"
+  },
   "split-strings-by-separator": {
     "posted": "2026-08-03",
     "title": "Split Strings by Separator"
