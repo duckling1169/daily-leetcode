@@ -25,6 +25,14 @@ When all matching problems have been posted, `seen.json` resets and the cycle re
 
 ## Files
 
+For local development, create an isolated environment with
+`py -3.12 -m venv .venv` on Windows (or `python3 -m venv .venv` elsewhere).
+Activate it with `.venv\Scripts\Activate.ps1` in PowerShell or
+`source .venv/Scripts/activate` in Git Bash, then run
+`python -m pip install -r requirements.txt`. Keep dependencies out of global
+Python. Running `daily_leetcode.py` can post to Discord; installation and import
+checks do not require running its `main()` function.
+
 - `daily_leetcode.py` — the script
 - `requirements.txt` — pinned Python deps (just `requests`)
 - `.github/workflows/daily.yml` — cron + commit-back
