@@ -479,6 +479,10 @@
     "posted": "2026-09-03",
     "title": "Smallest Missing Integer Greater Than Sequential Prefix Sum"
   },
+  "snake-in-matrix": {
+    "posted": "2026-09-08",
+    "title": "Snake in Matrix"
+  },
   "split-strings-by-separator": {
     "posted": "2026-08-03",
     "title": "Split Strings by Separator"
