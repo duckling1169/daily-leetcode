@@ -427,6 +427,10 @@
     "posted": "2026-06-19",
     "title": "Replace All ?'s to Avoid Consecutive Repeating Characters"
   },
+  "replace-elements-with-greatest-element-on-right-side": {
+    "posted": "2026-09-11",
+    "title": "Replace Elements with Greatest Element on Right Side"
+  },
   "reverse-integer": {
     "posted": "manual-import",
     "title": "Reverse Integer"
