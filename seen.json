@@ -507,6 +507,10 @@
     "posted": "manual-import",
     "title": "Sqrt(x)"
   },
+  "squares-of-a-sorted-array": {
+    "posted": "2026-09-12",
+    "title": "Squares of a Sorted Array"
+  },
   "string-to-integer-atoi": {
     "posted": "manual-import",
     "title": "String to Integer (atoi)"
