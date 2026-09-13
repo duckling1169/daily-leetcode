@@ -355,6 +355,10 @@
     "posted": "manual-import",
     "title": "Missing Number"
   },
+  "monotonic-array": {
+    "posted": "2026-09-13",
+    "title": "Monotonic Array"
+  },
   "move-zeroes": {
     "posted": "manual-import",
     "title": "Move Zeroes"
