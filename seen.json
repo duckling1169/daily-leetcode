@@ -579,6 +579,10 @@
     "posted": "manual-import",
     "title": "Top K Frequent Elements"
   },
+  "traffic-signal-color": {
+    "posted": "2026-09-25",
+    "title": "Traffic Signal Color"
+  },
   "transpose-matrix": {
     "posted": "2026-06-17",
     "title": "Transpose Matrix"
