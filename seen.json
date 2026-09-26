@@ -163,6 +163,10 @@
     "posted": "manual-import",
     "title": "Fibonacci Number"
   },
+  "find-closest-number-to-zero": {
+    "posted": "2026-09-26",
+    "title": "Find Closest Number to Zero"
+  },
   "find-common-elements-between-two-arrays": {
     "posted": "2026-09-18",
     "title": "Find Common Elements Between Two Arrays"
