@@ -1,0 +1,34 @@
+name: Daily LeetCode
+
+on:
+  schedule:
+    - cron: '7 6 * * *'    # 06:07 UTC = 2:07 AM EDT. Off-peak window; GH Actions silently dropped scheduled runs at 13:07 UTC two days running.
+  workflow_dispatch:        # lets you trigger manually for testing
+
+permissions:
+  contents: write           # needed to commit seen.json back
+
+jobs:
+  post:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - run: pip install -r requirements.txt
+
+      - run: python daily_leetcode.py
+        env:
+          DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+          LEETCODE_TAGS: "array,binary-search,binary-search-tree,binary-tree,bit-manipulation,breadth-first-search,depth-first-search,divide-and-conquer,dynamic-programming,greedy,hash-table,heap-priority-queue,linked-list,prefix-sum,recursion,sliding-window,sorting,stack,string,tree,two-pointers"
+
+      - name: Commit seen.json
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add seen.json
+          git diff --staged --quiet || git commit -m "Update seen.json"
+          git push
