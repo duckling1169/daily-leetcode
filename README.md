@@ -1,49 +1,38 @@
 # Daily LeetCode
 
-[![Daily LeetCode](https://github.com/duckling1169/daily-leetcode/actions/workflows/daily.yml/badge.svg)](https://github.com/duckling1169/daily-leetcode/actions/workflows/daily.yml)
 [![CI](https://github.com/duckling1169/daily-leetcode/actions/workflows/ci.yml/badge.svg)](https://github.com/duckling1169/daily-leetcode/actions/workflows/ci.yml)
 
-Posts one LeetCode problem to a Discord channel every day. One Python script, a Discord
-webhook and a GitHub Actions cron job: no bot account, no database, no stored state.
+One LeetCode problem a day, posted to your Discord channel. Paste a channel webhook, pick
+a difficulty and topics, and a problem arrives every day at 13:00 UTC. No bot, no account.
 
 ## How it works
 
-1. The workflow runs daily at 06:07 UTC.
-2. The script pages through LeetCode's public GraphQL API for free problems of one
-   difficulty, keeps those with any of the configured topic tags, and drops anything in
-   `skip.txt`.
-3. It sorts that pool by a hash of each problem's slug and posts the problem at position
-   `day number mod pool size`. Every problem comes up once per cycle, in an order that
-   looks random, without remembering what was posted. New LeetCode problems slot in
-   without resetting the cycle.
+- **Setup** (`/setup`) checks the webhook by posting a welcome message, then saves it with
+  your settings and gives you a private manage link (`/manage?key=…`) to change topics or
+  stop posting. Only a hash of that key is stored.
+- **The daily job** (`/api/cron`, run by Vercel Cron) posts to every channel. The pick is
+  stateless: the pool of free problems for a difficulty and topic set is ordered by a hash
+  of each slug, and day `d` posts `order[d mod n]`. Every problem comes up once per cycle,
+  and channels with the same settings share one LeetCode lookup. If Discord reports a
+  webhook as deleted, that channel is removed.
+- Webhook URLs can post to their channel, so they're stored AES-256-GCM encrypted.
 
-## Set up
+## Self-host
 
-1. Fork this repo.
-2. Create a webhook in your Discord channel (channel settings → Integrations → Webhooks).
-3. Add it as the repository secret `DISCORD_WEBHOOK_URL` (Settings → Secrets and
-   variables → Actions).
-4. Run the workflow once from the Actions tab to check it posts.
-
-## Configure
-
-| Setting | Where |
-| --- | --- |
-| Time of day | `cron:` in `.github/workflows/daily.yml` |
-| Topic tags | `LEETCODE_TAGS` in the workflow: comma-separated slugs as in `leetcode.com/tag/<slug>/`; empty means all |
-| Difficulty | `LEETCODE_DIFFICULTY`: `EASY` (default), `MEDIUM` or `HARD` |
-| Problems to never post | `skip.txt`, one slug per line |
+1. Deploy to Vercel and add a Neon Postgres database from the Vercel Marketplace (sets
+   `DATABASE_URL`). The table is created on first use.
+2. Set the variables in `.env.example`.
 
 ## Develop
 
 ```bash
-uv run --with pytest --with requests python -m pytest
-uvx ruff check && uvx ruff format --check
+pnpm install --frozen-lockfile
+pnpm dev
+pnpm verify   # format, typecheck, test
 ```
 
-The script declares its own dependencies ([PEP 723](https://peps.python.org/pep-0723/)),
-so `uv run daily_leetcode.py` needs no setup. Running it posts to the webhook in
-`DISCORD_WEBHOOK_URL`.
+Code: `lib/leetcode.ts` (LeetCode client and daily pick), `lib/discord.ts` (webhooks),
+`lib/subscriptions.ts` (storage), `app/api/cron/route.ts` (daily job).
 
 ## License
 
