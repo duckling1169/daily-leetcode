@@ -20,7 +20,7 @@ export default async function ManagePage({
           <span key={i} />
         ))}
       </div>
-      <div className="wrap" style={{ position: "relative" }}>
+      <div className="wrap">
         <nav className="nav" aria-label="Main">
           <a href="/">Daily LeetCode</a>
         </nav>

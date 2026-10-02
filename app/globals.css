@@ -129,6 +129,12 @@ code,
   margin-top: 8%;
 }
 
+/* Page content sits above the decorative panes (their blur must not cover it). */
+.hero > .wrap {
+  position: relative;
+  z-index: 1;
+}
+
 .hero-body {
   position: relative;
   padding: clamp(140px, 24vh, 220px) 0 48px;
