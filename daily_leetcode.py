@@ -1,145 +1,124 @@
-import json
+# /// script
+# requires-python = ">=3.12"
+# dependencies = ["requests>=2.34.2"]
+# ///
+"""Post one LeetCode problem to a Discord channel per day.
+
+Stateless: the free problem pool is ordered by a hash of each slug, and day N posts
+the problem at position N mod pool size. Every problem comes up once per cycle with
+no stored state. Problems listed in skip.txt are never posted.
+"""
+
+import hashlib
 import os
-import random
 import sys
-from datetime import date
+from datetime import UTC, date, datetime
 from pathlib import Path
+
 import requests
 
 LEETCODE_GQL = "https://leetcode.com/graphql"
-SEEN_PATH = Path("seen.json")
-WEBHOOK_URL = os.environ["DISCORD_WEBHOOK_URL"]
-
-# Comma-separated tag slugs to restrict the pool to. OR semantics — picks problems
-# matching *any* listed tag. Empty/unset means no tag filter. See README for the
-# full list of valid slugs.
-ALLOWED_TAGS = {t.strip() for t in os.environ.get("LEETCODE_TAGS", "").split(",") if t.strip()}
-
+SKIP_PATH = Path(__file__).with_name("skip.txt")
+PAGE_SIZE = 100  # LeetCode caps a page at 100; paginate with `skip`.
 HEADERS = {
     "Content-Type": "application/json",
-    "User-Agent": "daily-leetcode-bot/1.0",
+    "User-Agent": "daily-leetcode-bot/2.0",
     "Referer": "https://leetcode.com",
 }
 
-# --- LeetCode fetchers ---
+LIST_QUERY = """
+query questionList($skip: Int, $limit: Int, $filters: QuestionListFilterInput) {
+  questionList(categorySlug: "", skip: $skip, limit: $limit, filters: $filters) {
+    data { titleSlug isPaidOnly topicTags { slug } }
+  }
+}
+"""
 
-PAGE_SIZE = 100  # LeetCode caps response at 100 regardless of `limit`; must paginate via `skip`.
+PROBLEM_QUERY = """
+query question($titleSlug: String!) {
+  question(titleSlug: $titleSlug) {
+    questionFrontendId title titleSlug difficulty topicTags { name }
+  }
+}
+"""
 
-def fetch_easy_slugs():
-    """Get all free easy problem slugs, filtered by ALLOWED_TAGS if set."""
-    query = """
-    query problemsetQuestionList($categorySlug: String, $limit: Int, $skip: Int, $filters: QuestionListFilterInput) {
-      problemsetQuestionList: questionList(
-        categorySlug: $categorySlug
-        limit: $limit
-        skip: $skip
-        filters: $filters
-      ) {
-        questions: data {
-          titleSlug
-          isPaidOnly
-          topicTags { slug }
-        }
-      }
-    }
-    """
-    slugs = []
-    skip = 0
-    while True:
-        variables = {"categorySlug": "", "skip": skip, "limit": PAGE_SIZE, "filters": {"difficulty": "EASY"}}
-        r = requests.post(LEETCODE_GQL, json={"query": query, "variables": variables}, headers=HEADERS, timeout=20)
-        r.raise_for_status()
-        page = r.json()["data"]["problemsetQuestionList"]["questions"]
-        if not page:
-            break
-        for q in page:
-            if q["isPaidOnly"]:
-                continue
-            if ALLOWED_TAGS and not (ALLOWED_TAGS & {t["slug"] for t in q["topicTags"]}):
-                continue
-            slugs.append(q["titleSlug"])
-        skip += len(page)
+
+def graphql(query: str, variables: dict) -> dict:
+    r = requests.post(
+        LEETCODE_GQL,
+        json={"query": query, "variables": variables},
+        headers=HEADERS,
+        timeout=20,
+    )
+    r.raise_for_status()
+    return r.json()["data"]
+
+
+def eligible(question: dict, tags: set[str], skip: set[str]) -> bool:
+    """Free, not skipped, and matching any of `tags` (all problems when `tags` is empty)."""
+    if question["isPaidOnly"] or question["titleSlug"] in skip:
+        return False
+    return not tags or bool(tags & {t["slug"] for t in question["topicTags"]})
+
+
+def fetch_pool(difficulty: str, tags: set[str], skip: set[str]) -> list[str]:
+    slugs, offset = [], 0
+    while page := graphql(
+        LIST_QUERY,
+        {"skip": offset, "limit": PAGE_SIZE, "filters": {"difficulty": difficulty}},
+    )["questionList"]["data"]:
+        slugs += [q["titleSlug"] for q in page if eligible(q, tags, skip)]
+        offset += len(page)
     return slugs
 
-def fetch_problem(slug):
-    query = """
-    query questionData($titleSlug: String!) {
-      question(titleSlug: $titleSlug) {
-        questionFrontendId
-        title
-        titleSlug
-        difficulty
-        content
-        topicTags { name }
-      }
-    }
-    """
-    r = requests.post(LEETCODE_GQL, json={"query": query, "variables": {"titleSlug": slug}}, headers=HEADERS, timeout=20)
-    r.raise_for_status()
-    return r.json()["data"]["question"]
 
-# --- State ---
+def pick(pool: list[str], day: date) -> str:
+    """The problem for `day`: a stable hash order, so a problem's place only moves
+    when problems are added or removed."""
+    order = sorted(pool, key=lambda s: hashlib.sha256(s.encode()).hexdigest())
+    return order[day.toordinal() % len(order)]
 
-def load_seen():
-    if not SEEN_PATH.exists():
-        return {}
-    return json.loads(SEEN_PATH.read_text())
 
-def save_seen(seen):
-    SEEN_PATH.write_text(json.dumps(seen, indent=2, sort_keys=True))
-
-# --- Discord ---
-
-def post_to_discord(problem):
-    url = f"https://leetcode.com/problems/{problem['titleSlug']}/"
-    tags = ", ".join(t["name"] for t in problem["topicTags"]) or "—"
-    embed = {
-        "title": f"#{problem['questionFrontendId']} — {problem['title']}",
-        "url": url,
-        "color": 0x00B8A3,  # leetcode green-ish
+def embed(problem: dict) -> dict:
+    return {
+        "title": f"#{problem['questionFrontendId']} {problem['title']}",
+        "url": f"https://leetcode.com/problems/{problem['titleSlug']}/",
+        "color": 0x00B8A3,
         "fields": [
             {"name": "Difficulty", "value": problem["difficulty"], "inline": True},
-            {"name": "Tags", "value": tags, "inline": True},
+            {
+                "name": "Tags",
+                "value": ", ".join(t["name"] for t in problem["topicTags"]) or "None",
+                "inline": True,
+            },
         ],
-        "footer": {"text": "Daily Easy"},
+        "footer": {"text": "Daily LeetCode"},
     }
-    r = requests.post(WEBHOOK_URL, json={"embeds": [embed]}, timeout=20)
-    r.raise_for_status()
 
-# --- Main ---
 
-def main():
-    seen = load_seen()
-    today = date.today().isoformat()
+def read_list(value: str) -> set[str]:
+    """Comma- or newline-separated values; `#` lines are comments."""
+    items = (i.strip() for i in value.replace("\n", ",").split(","))
+    return {i for i in items if i and not i.startswith("#")}
 
-    # Idempotency guard: if any entry was already posted today, exit cleanly so
-    # a manual dispatch + delayed scheduled run can't double-post.
-    if any(entry.get("posted") == today for entry in seen.values()):
-        print(f"Already posted today ({today}). Skipping.")
-        return
 
-    all_slugs = fetch_easy_slugs()
+def main() -> None:
+    webhook = os.environ["DISCORD_WEBHOOK_URL"]
+    difficulty = os.environ.get("LEETCODE_DIFFICULTY", "EASY").upper()
+    tags = read_list(os.environ.get("LEETCODE_TAGS", ""))
+    skip = read_list(SKIP_PATH.read_text()) if SKIP_PATH.exists() else set()
 
-    # Misconfigured filter (e.g., typo in LEETCODE_TAGS) would otherwise silently
-    # wipe seen.json via the reset branch below. Fail loudly instead.
-    if not all_slugs:
-        print(f"No problems matched filter (tags={ALLOWED_TAGS or 'none'}). Aborting.", file=sys.stderr)
-        sys.exit(1)
+    pool = fetch_pool(difficulty, tags, skip)
+    if not pool:
+        sys.exit(f"No {difficulty} problems match LEETCODE_TAGS={sorted(tags)}.")
 
-    unseen = [s for s in all_slugs if s not in seen]
+    slug = pick(pool, datetime.now(UTC).date())
+    problem = graphql(PROBLEM_QUERY, {"titleSlug": slug})["question"]
+    requests.post(
+        webhook, json={"embeds": [embed(problem)]}, timeout=20
+    ).raise_for_status()
+    print(f"Posted {problem['title']} ({slug}) from a pool of {len(pool)}.")
 
-    if not unseen:
-        print("Exhausted all matching problems. Resetting.", file=sys.stderr)
-        seen = {}
-        unseen = all_slugs
-
-    slug = random.choice(unseen)
-    problem = fetch_problem(slug)
-    post_to_discord(problem)
-
-    seen[slug] = {"posted": today, "title": problem["title"]}
-    save_seen(seen)
-    print(f"Posted: {problem['title']} ({slug})")
 
 if __name__ == "__main__":
     main()
